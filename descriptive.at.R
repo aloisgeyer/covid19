@@ -65,7 +65,7 @@ plt=ggplot(all) + geom_point(aes(x=date, y=confirmed.new*10, colour = "confirmed
   xlab("date") +
   scale_y_continuous(trans="pseudo_log", 
                      sec.axis = sec_axis(~./10, name = "confirmed")) + 
-  scale_colour_manual(values = c("blue", "red")) + 
+  scale_colour_manual(values = c("red", "blue")) + 
   labs(colour = "",
        y="tests") +
   theme(legend.position = c(0.5, 0.25))
@@ -76,7 +76,7 @@ plt=ggplot(all) + geom_point(aes(x=date, y=confirmed.pct.weekly, colour = "confi
   geom_point(aes(x=date, y=tests.pct.weekly, colour = "tests (weekly new as % of current total)")) + 
   scale_x_date(breaks = day_breaks, labels = day_labels) + 
   xlab("date") +
-  scale_colour_manual(values = c("blue", "red")) + 
+  scale_colour_manual(values = c("red", "blue")) + 
   labs(colour = "",y="") +
   theme(legend.position = c(0.3, 0.2))
 plt
