@@ -109,7 +109,7 @@ for (j in 1:length(country.sel)){
     if(crit=="date.first.death" | crit=="date.confirmed.pm" | crit=="date.deaths.pm"){
       h=sel%>%filter(country==cs&date>=get(crit))%>%data.frame()
       h[,"date"]=ref[1:nrow(h),"date"] # shift data by overwriting with the reference country's dates
-      h[h[,"country"]==cs,"country"]=paste0(cs,".shifted.",nrow(ref)-nrow(h))
+      h[,"country"]=paste0(cs,".shifted.",nrow(ref)-nrow(h))
       
     }else{
       
@@ -135,14 +135,16 @@ plt=ggplot(sel.mod, aes(x=date, y=deaths.pm,col=country,shape=country)) + geom_p
   scale_x_date(breaks = day_breaks, labels = day_labels) + 
   scale_y_continuous(trans="pseudo_log") + 
   ylab("deaths (per million population)") + 
-  xlab(paste0("shift based on ",crit))
+  xlab(paste0("shift based on ",crit)) +
+  theme(legend.position = c(0.75, 0.3))
 plt
 ggsave(paste0("deaths.pm.",paste0(country.sel,collapse="."),".",today(),".pdf"),units="cm",width=20,height=12)
 
 plt=ggplot(sel.mod, aes(x=date, y=deaths.pct.weekly,col=country,shape=country)) + geom_point() + geom_smooth(se=F,span=2) + 
   scale_x_date(breaks = day_breaks, labels = day_labels) + 
   ylab("death rate (weekly new over total)") + 
-  xlab(paste0("shift based on ",crit))
+  xlab(paste0("shift based on ",crit)) +
+  theme(legend.position = c(0.2, 0.25))
 plt
 ggsave(paste0("deaths.pct.weekly.",paste0(country.sel,collapse="."),".",today(),".pdf"),units="cm",width=20,height=12)
 
@@ -150,13 +152,15 @@ plt=ggplot(sel.mod, aes(x=date, y=confirmed.pm,col=country,shape=country)) + geo
   scale_x_date(breaks = day_breaks, labels = day_labels) + 
   scale_y_continuous(trans="log10") + 
   ylab("confirmed (per million population)") + 
-  xlab(paste0("shift based on ",crit))
+  xlab(paste0("shift based on ",crit)) +
+  theme(legend.position = c(0.75, 0.3))
 plt
 ggsave(paste0("confirmed.pm.",paste0(country.sel,collapse="."),".",today(),".pdf"),units="cm",width=20,height=12)
 
 plt=ggplot(sel.mod, aes(x=date, y=confirmed.pct.weekly,col=country,shape=country)) + geom_point() + 
   scale_x_date(breaks = day_breaks, labels = day_labels) + 
   ylab("confirmed rate (weekly new over total)") + 
-  xlab(paste0("shift based on ",crit))
+  xlab(paste0("shift based on ",crit)) +
+  theme(legend.position = c(0.8, 0.75))
 plt
 ggsave(paste0("confirmed.pct.weekly.",paste0(country.sel,collapse="."),".",today(),".pdf"),units="cm",width=20,height=12)
