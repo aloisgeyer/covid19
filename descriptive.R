@@ -1,5 +1,10 @@
 # https://joachim-gassen.github.io/2020/03/meet-tidycovid19-yet-another-covid-19-related-r-package/
 
+# country.sel is the list auf countries for which comparisons are made and charts are produced; last entry is used
+country.sel=c("Italy","Austria","Spain","Sweden","Germany","United Kingdom")
+country.sel=c("Italy","Austria","Spain","France","Belgium","Greece")
+country.sel=c("Italy","Austria","Spain","Sweden","Netherlands","United Kingdom")
+
 #remotes::install_github("joachim-gassen/tidycovid19") # requires "remotes" to be installed
 suppressPackageStartupMessages({
   library(tidycovid19)
@@ -53,11 +58,6 @@ all=merge(all,dcpm,by="country")
 
 all=all%>%arrange(country,date)%>%group_by(country)
 
-country.sel=c("Italy","Austria","Spain","Sweden","Germany","United Kingdom")#,"Korea, South")#,"Norway")#,"Korea, South")
-country.sel=c("Italy","Austria","Spain","Sweden","Germany","United Kingdom")
-country.sel=c("Italy","Austria","Spain","France","Belgium","Greece")
-country.sel=c("Italy","Austria","Spain","Sweden","Netherlands","United Kingdom")
-
 most.recent=all%>%group_by(country)%>%arrange(date)%>%filter(row_number()==n())%>%data.frame()
 most.recent=most.recent%>%filter(country%in%country.sel)
 write.table(format(as.matrix(most.recent[,c("country","date","confirmed","deaths","confirmed.pm","deaths.pm","deaths.pct","deaths.pct.weekly","deaths.rate","date.first.death")])),
@@ -65,7 +65,7 @@ write.table(format(as.matrix(most.recent[,c("country","date","confirmed","deaths
 
 sel=all%>%filter(country%in%country.sel)%>%arrange(country,date)%>%group_by(country)
 
-#sel=sel%>%filter(date>"2020-02-29")%>%data.frame()
+sel=sel%>%filter(date>"2020-02-29")%>%data.frame()
 
 day_breaks = seq(as.Date("2020-03-01"), today(), "1 week")
 day_labels = format(day_breaks, "%d/%m")
