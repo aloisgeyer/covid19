@@ -4,6 +4,8 @@
 country.sel=c("Italy","Austria","Spain","Sweden","Germany","United Kingdom")
 country.sel=c("Italy","Austria","Spain","France","Belgium","Greece")
 country.sel=c("Italy","Austria","Spain","Sweden","Netherlands","United Kingdom")
+# country used as a reference (for shifting time axis)
+country.ref="Italy"
 
 #remotes::install_github("joachim-gassen/tidycovid19") # requires "remotes" to be installed
 suppressPackageStartupMessages({
@@ -18,7 +20,7 @@ suppressPackageStartupMessages({
   library(lubridate)
 })
 
-all <- download_merged_data(cached = TRUE)
+all <- download_merged_data(cached = T)
 
 all=all%>%arrange(country,date)%>%group_by(country)%>%
   mutate(pop=population/1000000,
@@ -65,7 +67,9 @@ write.table(format(as.matrix(most.recent[,c("country","date","confirmed","deaths
 
 sel=all%>%filter(country%in%country.sel)%>%arrange(country,date)%>%group_by(country)
 
-sel=sel%>%filter(date>"2020-02-29")%>%data.frame()
+# sel=sel%>%filter(date>"2020-02-29")%>%data.frame()
+
+sel %>% filter(country=="Austria") %>% select(confirmed.new) %>% tail()
 
 day_breaks = seq(as.Date("2020-03-01"), today(), "1 week")
 day_labels = format(day_breaks, "%d/%m")
@@ -87,15 +91,13 @@ day_labels = format(day_breaks, "%d/%m")
 #   ylab("confirmed (per million population)")
 # plt
 
-# shift time axis to maximize correlations
+# shift time axis according to one of the following criteria (last criteria is used)
 crit="deaths.rate"
 crit="deaths.pm"
 crit="confirmed.rate"
 crit="date.confirmed.pm"
 crit="date.deaths.pm"
 crit="date.first.death"
-
-country.ref="Italy"
 
 ref=sel%>%filter(country==country.ref&date>get(crit))%>%data.frame() # data for reference country
 sel.mod=ref # to be stacked below
