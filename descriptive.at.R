@@ -54,6 +54,10 @@ all=all%>%arrange(date)%>%
          confirmed.pct.weekly=confirmed.weekly/confirmed
          )
 
+all %>% select(date,confirmed.new,deaths.new) %>% tail()
+
+write.table(na.omit(all[,"confirmed.new"]),file="incidence.at.csv",row.names = F,col.names = F) # to be used at https://shiny.dide.imperial.ac.uk/epiestim/
+
 day_breaks = seq(as.Date("2020-03-01"), today(), "1 week")
 day_labels = format(day_breaks, "%d/%m")
 
@@ -81,3 +85,26 @@ plt=ggplot(all) + geom_point(aes(x=date, y=confirmed.pct.weekly, colour = "confi
   theme(legend.position = c(0.3, 0.2))
 plt
 ggsave(paste0("confirmed+test.pct.weekly.at.",today(),".pdf"),units="cm",width=20,height=12)
+
+plt=ggplot(all) + geom_point(aes(x=date, y=confirmed.new*0.1, colour = "confirmed (daily new)" )) + 
+  geom_point(aes(x=date, y=deaths.new, colour = "deaths (daily new)")) + 
+  scale_x_date(breaks = day_breaks, labels = day_labels) + 
+  xlab("date") +
+  scale_y_continuous(trans="pseudo_log", 
+                     sec.axis = sec_axis(~.*10, name = "confirmed")) + 
+  scale_colour_manual(values = c("red", "blue")) + 
+  labs(colour = "",
+       y="deaths") +
+  theme(legend.position = c(0.75, 0.15))
+plt
+ggsave(paste0("deaths+confirmed.new.at.",today(),".pdf"),units="cm",width=20,height=12)
+
+plt=ggplot(all) + geom_point(aes(x=date, y=confirmed.pct.weekly, colour = "confirmed (weekly new as % of current total)" )) + 
+  geom_point(aes(x=date, y=deaths.pct.weekly, colour = "deaths (weekly new as % of current total)")) + 
+  scale_x_date(breaks = day_breaks, labels = day_labels) + 
+  xlab("date") +
+  scale_colour_manual(values = c("red", "blue")) + 
+  labs(colour = "",y="") +
+  theme(legend.position = c(0.3, 0.15))
+plt
+ggsave(paste0("confirmed+deaths.pct.weekly.at.",today(),".pdf"),units="cm",width=20,height=12)
