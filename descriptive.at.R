@@ -80,7 +80,7 @@ plt=ggplot(all) + geom_point(aes(x=date, y=confirmed.pct.weekly, colour = "confi
   geom_point(aes(x=date, y=tests.pct.weekly, colour = "tests (weekly new as % of current total)")) + 
   scale_x_date(breaks = day_breaks, labels = day_labels) + 
   xlab("date") +
-  scale_colour_manual(values = c("red", "blue")) + 
+  scale_colour_manual(values = c("red", "black")) + 
   labs(colour = "",y="") +
   theme(legend.position = c(0.3, 0.2))
 plt
