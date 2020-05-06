@@ -4,6 +4,7 @@
 country.sel=c("Italy","Austria","Spain","Sweden","Germany","United Kingdom")
 country.sel=c("Italy","Austria","Spain","France","Belgium","Greece")
 country.sel=c("Italy","Austria","Spain","Sweden","Netherlands","United Kingdom")
+country.sel=c("Italy","Austria","Spain","Russia","United Kingdom","US")
 # country used as a reference (for shifting time axis)
 country.ref="Italy"
 
@@ -20,7 +21,16 @@ suppressPackageStartupMessages({
   library(lubridate)
 })
 
-all <- download_merged_data(cached = T)
+#all <- download_merged_data(cached = T)
+
+jh=download_jhu_csse_covid19_data(cached=T)
+jh=jh$country
+#gt=download_google_trends_data(cached=T)
+wb=download_wbank_data(cached=T)
+wb[wb$country=="United States","country"]="US"
+wb[wb$country=="Russian Federation","country"]="Russia"
+
+all=merge(jh,wb,by="country")
 
 all=all%>%arrange(country,date)%>%group_by(country)%>%
   mutate(pop=population/1000000,
@@ -69,7 +79,7 @@ sel=all%>%filter(country%in%country.sel)%>%arrange(country,date)%>%group_by(coun
 
 # sel=sel%>%filter(date>"2020-02-29")%>%data.frame()
 
-sel %>% filter(country=="Austria") %>% select(confirmed.new) %>% tail()
+sel %>% filter(country=="Austria") %>% select(date,confirmed.new,deaths.new) %>% tail()
 
 day_breaks = seq(as.Date("2020-03-01"), today(), "1 week")
 day_labels = format(day_breaks, "%d/%m")
